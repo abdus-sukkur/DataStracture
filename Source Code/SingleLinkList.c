@@ -7,28 +7,28 @@ Contact:
 **/
 #include<stdio.h>
 #include<stdlib.h>
-struct slinklist{
+
+typedef struct slinklist{
     int data;
     struct slinklist *next;
-};
-typedef struct slinklist node;
+}node;
+
 node *start = NULL, *last = NULL;
 
 int menu();
 node *getnode();
-
 void createlist(int n);
-int countnode(node *ptr);
+int countnode();
 void insert_at_beg();
 void insert_at_end();
 void insert_at_mid();
 void delete_at_first();
-void delete_at_last();
+void delete_at_end();
 void delete_at_mid();
 void traverse();
 void rev_traverse();
 
-/// Main Function
+
 int main(){
     int ch, n;
     while(1){
@@ -36,49 +36,54 @@ int main(){
         switch(ch){
             case 1:
                 if(start == NULL){
-                    printf("\n Number of nodes you want to create:");
-                    scanf("%d",&n);
+                    printf("\nNumber of nodes you want to create: ");
+                    scanf("%d", &n);
                     createlist(n);
-                    printf("\n List created...");
                 }else{
-                    printf("\n List is already created..");
+                    printf("\nList is already created");
                 }
-                break;
+            break;
+
             case 2:
                 insert_at_beg();
-                break;
+            break;
+
             case 3:
                 insert_at_end();
-                break;
+            break;
 
             case 4:
                 insert_at_mid();
-                break;
+            break;
 
             case 5:
                 delete_at_first();
-                break;
+            break;
 
             case 6:
-                delete_at_last();
-                break;
+                delete_at_end();
+            break;
 
             case 7:
                 delete_at_mid();
-                break;
+            break;
 
             case 8:
                 traverse();
-                break;
+            break;
+
+            case 9:
+                rev_traverse(start);
+            break;
 
             case 10:
-                printf("\n No of nodes: %d",countnode(start));
-                break;
+                printf("\nNo of nodes: %d",countnode(start));
+            break;
+
             case 11:
                 exit(0);
         }
     }
-    return 0;
 }
 
 /// Menu Function
@@ -104,17 +109,27 @@ int menu(){
     return ch;
 }
 
-/// Get node function for create a new node
+/// get node function create a node
 node *getnode(){
     node *newnode;
     newnode = (node *)malloc(sizeof(node));
-    printf("\n Enter data:");
+    printf("\nEnter a data: ");
     scanf("%d",&newnode->data);
     newnode->next = NULL;
     return newnode;
 }
 
-/// Node creation Function
+///Count node function count all the node
+int countnode(node *ptr){
+    int count = 0;
+    while(ptr != NULL){
+        count++;
+        ptr = ptr->next;
+    }
+    return count;
+}
+
+/// Create list function create for node listing
 void createlist(int n){
     int i;
     node *newnode;
@@ -132,16 +147,6 @@ void createlist(int n){
     }
 }
 
-/// Count node function count the all node
-int countnode(node *ptr){
-    int count = 0;
-    while(ptr != NULL){
-        count++;
-        ptr = ptr->next;
-    }
-    return count;
-}
-
 /// Insert node at beginning
 void insert_at_beg(){
     node *newnode;
@@ -154,27 +159,26 @@ void insert_at_beg(){
     }
 }
 
-///Insert node at the end
+/// Insert node at end
 void insert_at_end(){
     node *newnode;
     newnode = getnode();
     if(start == NULL){
         start = newnode;
+        last = newnode;
     }else{
         last->next = newnode;
         last = newnode;
     }
 }
 
-///Insert node at the mid
+/// Insert node at middle
 void insert_at_mid(){
     node *newnode, *temp, *prev;
     int pos, nodectr, ctr = 1;
-
-    printf("\nEnter the position:");
+    printf("\nEnter the position: ");
     scanf("%d",&pos);
     nodectr = countnode(start);
-
     if(pos>1 && pos<nodectr){
         newnode = getnode();
         temp = prev = start;
@@ -186,31 +190,31 @@ void insert_at_mid(){
         prev->next = newnode;
         newnode->next = temp;
     }else{
-        printf("position %d is not a middle position",pos);
+        printf("\nPosition %d is not a middle position",pos);
     }
 }
 
-/// Delete first node
+/// Delete the first node
 void delete_at_first(){
     node *temp;
     if(start == NULL){
-        printf("\n No nodes are exists....");
+        printf("\nNo nodes are exits...");
         return;
     }else{
         temp = start;
         start = temp->next;
         free(temp);
-        printf("\n Node deleted");
+        printf("\nNode deleted...");
     }
 }
 
-void delete_at_last(){
+/// Delete the last node
+void delete_at_end(){
     node *temp, *prev;
     if(start == NULL){
-        printf("\n Empty List...");
+        printf("\nEmpty list...");
         return;
-    }
-    else{
+    }else{
         temp = start;
         prev = start;
         while(temp->next != NULL){
@@ -220,50 +224,47 @@ void delete_at_last(){
         prev->next = NULL;
         last = prev;
         free(temp);
+        printf("\nNode deleted...");
     }
 }
 
+///Delete node at the middle position
 void delete_at_mid(){
-    int pos, nodectr, ctr = 1;
-    node *temp, *prev;
+    int pos,ctr = 1,nodectr;
     if(start == NULL){
-        printf("\n Empty List..");
+        printf("\nList is empty...");
         return;
     }
-    else{
-        printf("\n Enter position of node to delete:");
-        scanf("%d",&pos);
-        nodectr = countnode(start);
-        if(pos>nodectr){
-            printf("\nThis node doesnot exists");
+    printf("\nEnter the position of node to delete: ");
+    scanf("%d", &pos);
+    nodectr = countnode(start);
+    if(pos>1 && pos<nodectr){
+        node *temp, *prev;
+        temp = prev = start;
+        while(ctr<pos){
+            prev = temp;
+            temp = temp->next;
+            ctr++;
         }
-        if(pos>1 && pos<nodectr){
-            temp = prev = start;
-            while(ctr<pos){
-                prev = temp;
-                temp = temp->next;
-                ctr++;
-            }
-            prev->next = temp->next;
-            free(temp);
-            printf("\n Node deleted");
-        }
-        else{
-            printf("\n Invalid position");
-        }
+        prev->next = temp->next;
+        free(temp);
+        printf("\nNode deleted...");
+
+    }else{
+        printf("\nInvalid position");
     }
+
 }
 
+/// Traverse List (Left to Right)
 void traverse(){
     node *temp;
     temp = start;
-
     printf("\n The contents of List (Left to Right):\n");
     if(start == NULL){
-        printf("\nEmpty List..");
+        printf("\nList is empty...");
         return;
-    }
-    else{
+    }else{
         while(temp != NULL){
             printf("%d-->",temp->data);
             temp = temp->next;
@@ -272,11 +273,11 @@ void traverse(){
     }
 }
 
+/// Reverse Traverse List (Right to Left)
 void rev_traverse(node *start){
     if(start == NULL){
         return;
-    }
-    else{
+    }else{
         rev_traverse(start->next);
         printf("%d-->",start->data);
     }
