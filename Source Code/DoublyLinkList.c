@@ -25,6 +25,8 @@ void dll_insert_end();
 void dll_insert_mid();
 void dll_delete_beg();
 void dll_delete_last();
+void traverse_left_to_right();
+void traverse_right_to_left();
 
 void main(){
     int ch, n;
@@ -64,15 +66,15 @@ void main(){
             break;
 
             case 7 :
-                //dll_delete_mid();
+                dll_delete_mid();
             break;
 
             case 8 :
-                //traverse_left_to_right();
+                traverse_left_to_right();
             break;
 
             case 9 :
-                //traverse_right_to_left();
+                traverse_right_to_left();
             break;
 
             case 10 :
@@ -222,5 +224,72 @@ void dll_delete_last(){
         tail = tail->prev;
         tail->next = NULL;
         free(temp);
+    }
+}
+
+
+/// Delete node form the middle(selected position)
+void dll_delete_mid(){
+    node *temp;
+    int pos, nodectr, count = 1;
+    if(head == NULL){
+        printf("\nEmpty List...");
+        return;
+    }else{
+        printf("\nEnter the position of the node to delete: ");
+        scanf("%d", &pos);
+        nodectr = countnode(head);
+
+        if(pos>nodectr){
+            printf("\nthis node does not exist");
+            return;
+        }
+
+        if(pos>1 && pos<nodectr){
+            temp = head;
+            while(count<pos){
+                temp = temp->next;
+                count++;
+            }
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
+            free(temp);
+            printf("\nNode deleted...");
+        }else{
+            printf("\nPosition %d is not a middle position\n",pos);
+        }
+    }
+}
+
+///Traverse Left to right
+void traverse_left_to_right(){
+    node *temp;
+    temp = head;
+    printf("\nThe contents of list: ");
+    if(head == NULL){
+        printf("\nEmpty List");
+        return;
+    }else{
+        while(temp != NULL){
+            printf("\t%d", temp->data);
+            temp = temp->next;
+        }
+    }
+
+}
+
+///Reverse Traverse Right to left
+void traverse_right_to_left(){
+    node *temp;
+    temp = tail;
+    printf("\nThe contents of list: ");
+    if(head == NULL || tail == NULL){
+        printf("\nList is empty...");
+        return;
+    }else{
+        while(temp != NULL){
+            printf("\t%d",temp->data);
+            temp = temp->prev;
+        }
     }
 }
